@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 
+import './question.dart';
+import './answer.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -15,45 +18,55 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePageState extends State<MyHomePage> {
-  var questionIndex = 0;
+class _MyHomePageState extends State<MyHomePage> {
+  var _questionIndex = 0;
+  static const questions = [
+    {
+      'question': 'What\'s your favorite color?',
+      'answers': ['Black', 'Red', 'Green', 'White']
+    },
+    {
+      'question': 'What\'s your favorite animal?',
+      'answers': ['Dog', 'Cat', 'Penguin', 'Owl']
+    },
+    {
+      'question': 'What\'s your favorite food?',
+      'answers': ['Pasta', 'Pizza', 'Ice Cream', 'Chocolate']
+    }
+  ];
 
-  void answerQuestion() {
+  void _answerQuestion() {
     setState(() {
-      questionIndex = questionIndex + 1;
+      _questionIndex = _questionIndex + 1;
     });
-    print(questionIndex);
+    print(_questionIndex);
   }
 
   Widget build(BuildContext context) {
-    var questions = [
-      'What\'s your favorite color?',
-      'What\'s your favorite animal?'
-    ];
-
     return Scaffold(
-      appBar: AppBar(
-        title: Text('My First Flutter App'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(questions[questionIndex]),
-            RaisedButton(
-              child: Text('Answer 1'),
-              onPressed: answerQuestion,
-            ),
-          ],
+        appBar: AppBar(
+          title: Text('My First Flutter App'),
         ),
-      ),
-    );
+        body: Center(
+          child: _questionIndex < questions.length
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Question(questions[_questionIndex]['question']),
+                    ...(questions[_questionIndex]['answers'] as List<String>)
+                        .map((answer) {
+                      return Answer(_answerQuestion, answer);
+                    }).toList()
+                  ],
+                )
+              : Text('You did it'),
+        ));
   }
 }
 
 class MyHomePage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() {
-    return MyHomePageState();
+    return _MyHomePageState();
   }
 }
